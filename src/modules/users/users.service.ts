@@ -1,0 +1,69 @@
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
+
+@Injectable()
+export class UsersService {
+  constructor(
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
+  ) {}
+
+  async findById(id: number): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { id } });
+    if (!user) throw new NotFoundException('用户不存在');
+    return user;
+  }
+
+  async findByUsername(username: string): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { username } });
+  }
+
+  async findByUsernameWithPassword(username: string): Promise<User | null> {
+    return this.usersRepository.findOne({
+      where: { username },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        passwordHash: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { email } });
+  }
+
+  async create(data: Partial<User>): Promise<User> {
+    if (!data.username || !data.email) {
+      throw new ConflictException('用户名和邮箱不能为空');
+    }
+    const existingUsername = await this.findByUsername(data.username);
+    if (existingUsername) throw new ConflictException('用户名已存在');
+
+    const existingEmail = await this.findByEmail(data.email);
+    if (existingEmail) throw new ConflictException('邮箱已被注册');
+
+    const user = this.usersRepository.create(data);
+    return this.usersRepository.save(user);
+  }
+
+  async update(id: number, data: Partial<User>): Promise<User> {
+    const user = await this.findById(id);
+    if (data.email && data.email !== user.email) {
+      const existingEmail = await this.findByEmail(data.email);
+      if (existingEmail) throw new ConflictException('邮箱已被注册');
+    }
+    Object.assign(user, data);
+    return this.usersRepository.save(user);
+  }
+}

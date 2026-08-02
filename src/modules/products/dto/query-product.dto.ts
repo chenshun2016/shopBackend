@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
 import {
   IsString,
   IsOptional,
@@ -41,6 +41,9 @@ export class QueryProductDto extends PaginationDto {
     enum: ['price', 'createdAt', 'name'],
     example: 'createdAt',
   })
+  @Transform(({ value }: { value: unknown }) =>
+    value === '' ? undefined : value,
+  )
   @IsString()
   @IsIn(['price', 'createdAt', 'name'])
   @IsOptional()
@@ -51,6 +54,9 @@ export class QueryProductDto extends PaginationDto {
     enum: ['asc', 'desc'],
     example: 'desc',
   })
+  @Transform(({ value }: { value: unknown }) =>
+    value === '' ? undefined : value,
+  )
   @IsString()
   @IsIn(['asc', 'desc'])
   @IsOptional()

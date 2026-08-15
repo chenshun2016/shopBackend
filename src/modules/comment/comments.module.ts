@@ -11,4 +11,4 @@ import { ProductsModule } from '../products/products.module';
   providers: [CommentsService],
   exports: [CommentsService],
 })
-export class FavoritesModule {}
+export class CommentsModule {}

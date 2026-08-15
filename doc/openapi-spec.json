@@ -488,7 +488,7 @@
     },
     "/api/favorites/{productId}": {
       "post": {
-        "operationId": "FavoritesController_add",
+        "operationId": "CommentsController_add",
         "parameters": [
           {
             "name": "productId",
@@ -506,7 +506,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Favorite"
+                  "$ref": "#/components/schemas/Comment"
                 }
               }
             }
@@ -517,13 +517,13 @@
             "JWT": []
           }
         ],
-        "summary": "收藏商品",
+        "summary": "评论商品",
         "tags": [
-          "收藏"
+          "评论"
         ]
       },
       "delete": {
-        "operationId": "FavoritesController_remove",
+        "operationId": "CommentsController_remove",
         "parameters": [
           {
             "name": "productId",
@@ -545,15 +545,15 @@
             "JWT": []
           }
         ],
-        "summary": "取消收藏",
+        "summary": "取消评论",
         "tags": [
-          "收藏"
+          "评论"
         ]
       }
     },
     "/api/favorites": {
       "get": {
-        "operationId": "FavoritesController_findAll",
+        "operationId": "CommentsController_findAll",
         "parameters": [
           {
             "name": "page",
@@ -583,7 +583,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -591,9 +598,9 @@
             "JWT": []
           }
         ],
-        "summary": "我的收藏列表（分页）",
+        "summary": "我的评论列表（分页）",
         "tags": [
-          "收藏"
+          "评论"
         ]
       }
     },
@@ -1715,6 +1722,47 @@
           "productId",
           "createdAt",
           "updatedAt",
+          "user",
+          "product"
+        ]
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "评论ID"
+          },
+          "userId": {
+            "type": "number",
+            "description": "用户ID"
+          },
+          "productId": {
+            "type": "number",
+            "description": "商品ID"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "评论时间"
+          },
+          "remarks": {
+            "type": "string",
+            "description": "评论内容"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "product": {
+            "$ref": "#/components/schemas/Product"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "productId",
+          "createdAt",
+          "remarks",
           "user",
           "product"
         ]

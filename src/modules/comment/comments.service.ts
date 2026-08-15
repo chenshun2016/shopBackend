@@ -58,7 +58,6 @@ export class CommentsService {
       .skip((page - 1) * limit)
       .take(limit);
     const [comments, total] = await qb.getManyAndCount();
-    const list = comments.map((f) => f.product);
-    return { list, total, page, limit };
+    return { list: comments, total, page, limit };
   }
 }

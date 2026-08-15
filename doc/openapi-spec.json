@@ -488,6 +488,117 @@
     },
     "/api/favorites/{productId}": {
       "post": {
+        "operationId": "FavoritesController_add",
+        "parameters": [
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "description": "商品ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Favorite"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "收藏商品",
+        "tags": [
+          "收藏"
+        ]
+      },
+      "delete": {
+        "operationId": "FavoritesController_remove",
+        "parameters": [
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "description": "商品ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "取消收藏",
+        "tags": [
+          "收藏"
+        ]
+      }
+    },
+    "/api/favorites": {
+      "get": {
+        "operationId": "FavoritesController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "页码",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "我的收藏列表（分页）",
+        "tags": [
+          "收藏"
+        ]
+      }
+    },
+    "/api/comments/{productId}": {
+      "post": {
         "operationId": "CommentsController_add",
         "parameters": [
           {
@@ -551,7 +662,7 @@
         ]
       }
     },
-    "/api/favorites": {
+    "/api/comments": {
       "get": {
         "operationId": "CommentsController_findAll",
         "parameters": [
@@ -583,14 +694,7 @@
         ],
         "responses": {
           "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
+            "description": ""
           }
         },
         "security": [

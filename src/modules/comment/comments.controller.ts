@@ -23,7 +23,7 @@ import { CommentsService } from './comments.service';
 import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('评论')
-@Controller('favorites')
+@Controller('comments')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('JWT')
 export class CommentsController {

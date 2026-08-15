@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Comment } from './entities/comment.entity';
-import { Product } from '../products/entities/product.entity';
+// import { Product } from '../products/entities/product.entity';
 import { ProductsService } from '../products/products.service';
 import {
   PaginationDto,
@@ -33,8 +33,8 @@ export class CommentsService {
     if (existing) {
       return existing;
     }
-    const favorite = this.commentRepo.create({ userId, productId, remarks });
-    return this.commentRepo.save(favorite);
+    const comment = this.commentRepo.create({ userId, productId, remarks });
+    return this.commentRepo.save(comment);
   }
 
   // 取消评论

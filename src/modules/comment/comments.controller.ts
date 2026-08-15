@@ -20,6 +20,7 @@ import {
   UserPayload,
 } from '../../common/decorators/current-user.decorator';
 import { CommentsService } from './comments.service';
+import { CreateCommentDto } from './dto/create-comment.dto';
 import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('评论')
@@ -35,9 +36,9 @@ export class CommentsController {
   add(
     @CurrentUser() user: UserPayload,
     @Param('productId') productId: string,
-    @Body('remarks') remarks: string,
+    @Body() dto: CreateCommentDto,
   ) {
-    return this.commentsService.add(user.userId, +productId, remarks);
+    return this.commentsService.add(user.userId, +productId, dto.remarks);
   }
 
   @Delete(':productId')

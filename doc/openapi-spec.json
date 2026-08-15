@@ -611,6 +611,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommentDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "",
@@ -1828,6 +1838,20 @@
           "updatedAt",
           "user",
           "product"
+        ]
+      },
+      "CreateCommentDto": {
+        "type": "object",
+        "properties": {
+          "remarks": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "评论内容",
+            "example": "商品质量很好，物流快！"
+          }
+        },
+        "required": [
+          "remarks"
         ]
       },
       "Comment": {

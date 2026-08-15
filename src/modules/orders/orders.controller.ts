@@ -12,6 +12,11 @@ import {
   ApiOperation,
   ApiBearerAuth,
   ApiQuery,
+  ApiParam,
+  ApiOkResponse,
+  ApiNotFoundResponse,
+  ApiForbiddenResponse,
+  ApiBadRequestResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import {
@@ -20,6 +25,7 @@ import {
 } from '../../common/decorators/current-user.decorator';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { Order } from './entities/order.entity';
 
 @ApiTags('订单')
 @Controller('orders')
@@ -53,7 +59,30 @@ export class OrdersController {
   }
 
   @Post(':id/pay')
-  @ApiOperation({ summary: '模拟支付' })
+  @ApiOperation({
+    summary: '模拟支付',
+    description:
+      '对指定订单执行模拟支付，无需真实支付参数。\n\n' +
+      '请求头：Authorization: Bearer <token>（必须，需为订单所属用户）\n' +
+      '路径参数：id — 订单ID（从订单列表接口获取）\n' +
+      '请求体：无，不需要传任何 body\n\n' +
+      '支付成功后：paymentStatus → paid，status → confirmed，paidAt 记录支付时间。',
+  })
+  @ApiParam({
+    name: 'id',
+    description: '订单ID（路径参数，从订单列表接口获取）',
+    example: 1,
+    type: Number,
+  })
+  @ApiOkResponse({
+    description: '支付成功，返回更新后的订单（含订单明细 items）',
+    type: Order,
+  })
+  @ApiNotFoundResponse({ description: '订单不存在' })
+  @ApiForbiddenResponse({ description: '无权操作此订单（不是自己的订单）' })
+  @ApiBadRequestResponse({
+    description: '订单已支付（请勿重复操作）或订单已取消（无法支付）',
+  })
   pay(@CurrentUser() user: UserPayload, @Param('id') id: string) {
     return this.ordersService.pay(user.userId, +id);
   }

@@ -1,0 +1,13 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Region } from './entities/region.entity';
+import { RegionsService } from './regions.service';
+import { RegionController } from './regions.controller';
+
+@Module({
+  imports: [TypeOrmModule.forFeature([Region])],
+  controllers: [RegionController],
+  providers: [RegionsService],
+  exports: [RegionsService],
+})
+export class Regions {}

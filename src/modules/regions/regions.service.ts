@@ -10,10 +10,12 @@ export class RegionsService {
     private readonly repo: Repository<Region>,
   ) {}
 
-  async findByParentCode(parentCode: number): Promise<Region[]> {
+  async findByParentCode(parentCode?: string): Promise<Region[]> {
+    // 不带 parentCode 返回省级，带则返回其下级
+    const where = parentCode ? { parentCode } : { level: 1 };
     return this.repo.find({
-      where: { parentCode: String(parentCode) },
-      order: { parentCode: 'DESC' },
+      where,
+      order: { code: 'ASC' },
     });
   }
 }

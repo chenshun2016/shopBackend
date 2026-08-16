@@ -10,4 +10,4 @@ import { RegionController } from './regions.controller';
   providers: [RegionsService],
   exports: [RegionsService],
 })
-export class Regions {}
+export class RegionsModule {}

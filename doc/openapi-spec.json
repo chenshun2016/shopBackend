@@ -745,6 +745,40 @@
         ]
       }
     },
+    "/api/regions": {
+      "get": {
+        "operationId": "RegionController_findAll",
+        "parameters": [
+          {
+            "name": "parentCode",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Region"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "查看区域（不带 parentCode 返回省级，带则返回其下级）",
+        "tags": [
+          "区域（公开）"
+        ]
+      }
+    },
     "/api/orders": {
       "post": {
         "operationId": "OrdersController_create",
@@ -1933,6 +1967,33 @@
           "updatedAt",
           "user",
           "product"
+        ]
+      },
+      "Region": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "行政区划代码（省2位/市4位/区6位）"
+          },
+          "name": {
+            "type": "string",
+            "description": "名称"
+          },
+          "level": {
+            "type": "number",
+            "description": "层级：1省 2市 3区 4街道"
+          },
+          "parentCode": {
+            "type": "string",
+            "nullable": true,
+            "description": "上级代码，省级为 null"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "level"
         ]
       },
       "CreateOrderDto": {

@@ -10,6 +10,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
 import { Product } from '../../products/entities/product.entity';
+import { Exclude, Expose } from 'class-transformer';
 
 @Entity('comments')
 @Unique('uk_user_product', ['userId', 'productId'])
@@ -24,6 +25,7 @@ export class Comment {
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
+  @Exclude()
   user: User;
 
   @ApiProperty({ description: '商品ID' })
@@ -41,4 +43,10 @@ export class Comment {
   @ApiProperty({ description: '评论内容' })
   @Column({ name: 'remarks' })
   remarks: string;
+
+  // ✅ 虚拟字段：把 username 提升到顶层
+  @Expose()
+  get username(): string {
+    return this.user?.username;
+  }
 }

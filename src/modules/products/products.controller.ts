@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  Param,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { QueryProductDto } from './dto/query-product.dto';
@@ -6,6 +13,7 @@ import { Public } from '../../common/decorators/public.decorator';
 
 @ApiTags('商品（公开）')
 @Controller('products')
+@UseInterceptors(ClassSerializerInterceptor)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 

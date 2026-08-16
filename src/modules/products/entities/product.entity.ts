@@ -5,11 +5,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
   JoinColumn,
   Index,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Category } from '../../categories/entities/category.entity';
+import { Comment } from '../../comment/entities/comment.entity';
 
 @Entity('products')
 @Index('ft_name_desc', ['name', 'description'], { fulltext: true })
@@ -45,6 +47,9 @@ export class Product {
   @ManyToOne(() => Category, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'category_id' })
   category: Category;
+
+  @OneToMany(() => Comment, (comment) => comment.product)
+  comments: Comment[];
 
   @ApiProperty({ description: '是否上架' })
   @Column({ default: true })

@@ -611,16 +611,6 @@
             }
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateCommentDto"
-              }
-            }
-          }
-        },
         "responses": {
           "201": {
             "description": "",
@@ -1704,6 +1694,12 @@
           },
           "category": {
             "$ref": "#/components/schemas/Category"
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Comment"
+            }
           }
         },
         "required": [
@@ -1715,7 +1711,49 @@
           "isActive",
           "createdAt",
           "updatedAt",
-          "category"
+          "category",
+          "comments"
+        ]
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "评论ID"
+          },
+          "userId": {
+            "type": "number",
+            "description": "用户ID"
+          },
+          "productId": {
+            "type": "number",
+            "description": "商品ID"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "评论时间"
+          },
+          "remarks": {
+            "type": "string",
+            "description": "评论内容"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "product": {
+            "$ref": "#/components/schemas/Product"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "productId",
+          "createdAt",
+          "remarks",
+          "user",
+          "product"
         ]
       },
       "CartItem": {
@@ -1836,61 +1874,6 @@
           "productId",
           "createdAt",
           "updatedAt",
-          "user",
-          "product"
-        ]
-      },
-      "CreateCommentDto": {
-        "type": "object",
-        "properties": {
-          "remarks": {
-            "type": "string",
-            "maxLength": 255,
-            "description": "评论内容",
-            "example": "商品质量很好，物流快！"
-          }
-        },
-        "required": [
-          "remarks"
-        ]
-      },
-      "Comment": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "description": "评论ID"
-          },
-          "userId": {
-            "type": "number",
-            "description": "用户ID"
-          },
-          "productId": {
-            "type": "number",
-            "description": "商品ID"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "评论时间"
-          },
-          "remarks": {
-            "type": "string",
-            "description": "评论内容"
-          },
-          "user": {
-            "$ref": "#/components/schemas/User"
-          },
-          "product": {
-            "$ref": "#/components/schemas/Product"
-          }
-        },
-        "required": [
-          "id",
-          "userId",
-          "productId",
-          "createdAt",
-          "remarks",
           "user",
           "product"
         ]

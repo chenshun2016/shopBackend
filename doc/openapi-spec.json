@@ -136,7 +136,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateUserDto"
+                "$ref": "#/components/schemas/UpdatePasswordDto"
               }
             }
           }
@@ -1627,6 +1627,16 @@
         ]
       },
       "UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "邮箱"
+          }
+        }
+      },
+      "UpdatePasswordDto": {
         "type": "object",
         "properties": {
           "email": {

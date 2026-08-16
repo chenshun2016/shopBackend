@@ -90,7 +90,7 @@ export class ProductsService {
   async findOne(id: number): Promise<Product> {
     const product = await this.repo.findOne({
       where: { id },
-      relations: { category: true, comments: true },
+      relations: { category: true, comments: { user: true } },
     });
     if (!product) throw new NotFoundException('商品不存在');
     return product;

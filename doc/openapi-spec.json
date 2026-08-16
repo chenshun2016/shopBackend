@@ -127,6 +127,43 @@
         ]
       }
     },
+    "/api/users/updatePassword": {
+      "post": {
+        "operationId": "UsersController_updatePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "修改密码",
+        "tags": [
+          "用户"
+        ]
+      }
+    },
     "/api/categories": {
       "get": {
         "operationId": "CategoriesController_findAll",
@@ -1596,6 +1633,16 @@
             "type": "string",
             "format": "email",
             "description": "邮箱"
+          },
+          "password": {
+            "type": "string",
+            "description": "密码"
+          },
+          "username": {
+            "type": "string",
+            "pattern": "^[\\u4e00-\\u9fa5]{2,4}$",
+            "description": "用户名",
+            "example": "哥哥"
           }
         }
       },

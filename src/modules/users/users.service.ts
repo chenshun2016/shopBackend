@@ -6,6 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -64,6 +65,21 @@ export class UsersService {
       if (existingEmail) throw new ConflictException('邮箱已被注册');
     }
     Object.assign(user, data);
+    return this.usersRepository.save(user);
+  }
+
+  async updatePassword(data: Partial<User>): Promise<User> {
+    if (!data.email) throw new ConflictException('请填写邮箱');
+    const user = await this.findByEmail(data.email);
+    if (!user) throw new ConflictException('该邮箱未注册');
+    if (!data.username) throw new ConflictException('请填写用户名');
+    if (data.email && data.email !== user.email)
+      throw new ConflictException('邮箱不对');
+    // if (!data.password) throw new ConflictException('请填写邮箱');
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(data.password, salt);
+    Object.assign(user, data);
+    console.log(user, 'uuu');
     return this.usersRepository.save(user);
   }
 }

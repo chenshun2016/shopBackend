@@ -38,10 +38,10 @@ export enum AddressType {
 
 @Entity('user_address')
 @Index(['userId', 'isDefault'])
-@Index(['userId', 'isDeleted'])
+@Index(['userId', 'deletedAt'])
 export class Address {
   @ApiProperty({ description: '地址ID' })
-  @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @ApiProperty({ description: '是否默认' })
@@ -55,7 +55,7 @@ export class Address {
   isDefault: number;
 
   @ApiProperty({ description: '用户ID' })
-  @Column({ type: 'bigint', unsigned: true })
+  @Column()
   @Index()
   userId: number;
 
@@ -140,8 +140,11 @@ export class Address {
     scale: 7,
     nullable: true,
     transformer: {
-      to: (value: number) => value,
-      from: (value: string) => parseFloat(value),
+      // 双向兜底：NaN/null/undefined 一律转 null，否则 mysql2 对 decimal 列输出字面量 NaN 导致 SQL 报错
+      to: (value?: number) =>
+        value == null || Number.isNaN(value) ? null : value,
+      from: (value: string | null) =>
+        value == null ? null : parseFloat(value),
     },
   })
   @IsOptional()
@@ -155,8 +158,10 @@ export class Address {
     scale: 7,
     nullable: true,
     transformer: {
-      to: (value: number) => value,
-      from: (value: string) => parseFloat(value),
+      to: (value?: number) =>
+        value == null || Number.isNaN(value) ? null : value,
+      from: (value: string | null) =>
+        value == null ? null : parseFloat(value),
     },
   })
   @IsOptional()
@@ -188,14 +193,6 @@ export class Address {
   })
   @IsEnum(AddressType)
   type: AddressType;
-
-  @ApiProperty({ description: '是否默认地址' })
-  @Column({
-    type: 'tinyint',
-    default: 0,
-  })
-  @Index()
-  isDefault: number;
 
   @ApiProperty({ description: '地址别名', required: false })
   @Column({ type: 'varchar', length: 50, nullable: true })

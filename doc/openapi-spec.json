@@ -1469,6 +1469,206 @@
           "后台管理 - 分类"
         ]
       }
+    },
+    "/api/address": {
+      "post": {
+        "operationId": "AddressController_createAddress",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAddressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Address"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "新增地址",
+        "tags": [
+          "用户地址"
+        ]
+      },
+      "get": {
+        "operationId": "AddressController_getAddresses",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Address"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "获取用户地址",
+        "tags": [
+          "用户地址"
+        ]
+      },
+      "put": {
+        "operationId": "AddressController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAddressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Address"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "修改地址",
+        "tags": [
+          "用户地址"
+        ]
+      }
+    },
+    "/api/address/{id}": {
+      "get": {
+        "operationId": "AddressController_getUserAddressDetail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Address"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "获取用户地址详情",
+        "tags": [
+          "用户地址"
+        ]
+      },
+      "delete": {
+        "operationId": "AddressController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "删除地址",
+        "tags": [
+          "用户地址"
+        ]
+      }
+    },
+    "/api/address/batch": {
+      "delete": {
+        "operationId": "AddressController_batchDelete",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchDeleteAddressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchDeleteResultDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "批量删除地址",
+        "tags": [
+          "用户地址"
+        ]
+      }
     }
   },
   "info": {
@@ -1646,11 +1846,14 @@
             "type": "string",
             "description": "更新时间"
           },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Address"
+            }
+          },
           "passwordHash": {
             "type": "string"
-          },
-          "addresses": {
-            "type": "object"
           }
         },
         "required": [
@@ -1660,8 +1863,150 @@
           "role",
           "createdAt",
           "updatedAt",
-          "passwordHash",
-          "addresses"
+          "addresses",
+          "passwordHash"
+        ]
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "地址ID"
+          },
+          "isDefault": {
+            "type": "number",
+            "enum": [
+              0,
+              1
+            ],
+            "description": "是否默认"
+          },
+          "userId": {
+            "type": "number",
+            "description": "用户ID"
+          },
+          "consignee": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20,
+            "description": "收货人姓名"
+          },
+          "mobile": {
+            "type": "string",
+            "description": "手机号"
+          },
+          "phoneBackup": {
+            "type": "string",
+            "description": "备用手机号"
+          },
+          "provinceId": {
+            "type": "number",
+            "description": "省份ID"
+          },
+          "provinceName": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "省份名称"
+          },
+          "cityId": {
+            "type": "number",
+            "description": "城市ID"
+          },
+          "cityName": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "城市名称"
+          },
+          "districtId": {
+            "type": "number",
+            "description": "区县ID"
+          },
+          "districtName": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "区县名称"
+          },
+          "addressDetail": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "详细地址"
+          },
+          "postalCode": {
+            "type": "string",
+            "maxLength": 10,
+            "description": "邮政编码"
+          },
+          "latitude": {
+            "type": "number",
+            "description": "纬度"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "经度"
+          },
+          "label": {
+            "enum": [
+              "home",
+              "company",
+              "school",
+              "other"
+            ],
+            "type": "string",
+            "description": "地址标签",
+            "default": "other"
+          },
+          "type": {
+            "enum": [
+              "domestic",
+              "overseas"
+            ],
+            "type": "string",
+            "description": "地址类型",
+            "default": "domestic"
+          },
+          "alias": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "地址别名"
+          },
+          "extra": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "扩展信息"
+          },
+          "createTime": {
+            "format": "date-time",
+            "type": "string",
+            "description": "创建时间"
+          },
+          "updateTime": {
+            "format": "date-time",
+            "type": "string",
+            "description": "更新时间"
+          },
+          "deletedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "删除时间（软删除）"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "required": [
+          "id",
+          "isDefault",
+          "userId",
+          "consignee",
+          "mobile",
+          "addressDetail",
+          "label",
+          "type",
+          "createTime",
+          "updateTime",
+          "user"
         ]
       },
       "UpdateUserDto": {
@@ -2302,6 +2647,306 @@
             "example": 1
           }
         }
+      },
+      "CreateAddressDto": {
+        "type": "object",
+        "properties": {
+          "consignee": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20,
+            "description": "收货人姓名",
+            "example": "张三"
+          },
+          "mobile": {
+            "type": "string",
+            "description": "手机号",
+            "example": "13800138000"
+          },
+          "phoneBackup": {
+            "type": "string",
+            "description": "备用手机号",
+            "example": "13900139000"
+          },
+          "provinceId": {
+            "type": "number",
+            "description": "省份ID"
+          },
+          "provinceName": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "省份名称"
+          },
+          "cityId": {
+            "type": "number",
+            "description": "城市ID"
+          },
+          "cityName": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "城市名称"
+          },
+          "districtId": {
+            "type": "number",
+            "description": "区县ID"
+          },
+          "districtName": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "区县名称"
+          },
+          "addressDetail": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "详细地址",
+            "example": "中关村大街1号A座101室"
+          },
+          "postalCode": {
+            "type": "string",
+            "maxLength": 10,
+            "description": "邮政编码"
+          },
+          "latitude": {
+            "type": "number",
+            "description": "纬度"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "经度"
+          },
+          "label": {
+            "enum": [
+              "home",
+              "company",
+              "school",
+              "other"
+            ],
+            "type": "string",
+            "description": "地址标签",
+            "default": "other"
+          },
+          "type": {
+            "enum": [
+              "domestic",
+              "overseas"
+            ],
+            "type": "string",
+            "description": "地址类型",
+            "default": "domestic"
+          },
+          "isDefault": {
+            "type": "number",
+            "enum": [
+              0,
+              1
+            ],
+            "description": "是否设为默认地址",
+            "default": false
+          },
+          "alias": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "地址别名"
+          },
+          "extra": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "扩展信息"
+          }
+        },
+        "required": [
+          "consignee",
+          "mobile",
+          "addressDetail"
+        ]
+      },
+      "UpdateAddressDto": {
+        "type": "object",
+        "properties": {
+          "consignee": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20,
+            "description": "收货人姓名",
+            "example": "张三"
+          },
+          "mobile": {
+            "type": "string",
+            "description": "手机号",
+            "example": "13800138000"
+          },
+          "phoneBackup": {
+            "type": "string",
+            "description": "备用手机号",
+            "example": "13900139000"
+          },
+          "provinceId": {
+            "type": "number",
+            "description": "省份ID"
+          },
+          "provinceName": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "省份名称"
+          },
+          "cityId": {
+            "type": "number",
+            "description": "城市ID"
+          },
+          "cityName": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "城市名称"
+          },
+          "districtId": {
+            "type": "number",
+            "description": "区县ID"
+          },
+          "districtName": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "区县名称"
+          },
+          "addressDetail": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "详细地址",
+            "example": "中关村大街1号A座101室"
+          },
+          "postalCode": {
+            "type": "string",
+            "maxLength": 10,
+            "description": "邮政编码"
+          },
+          "latitude": {
+            "type": "number",
+            "description": "纬度"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "经度"
+          },
+          "label": {
+            "enum": [
+              "home",
+              "company",
+              "school",
+              "other"
+            ],
+            "type": "string",
+            "description": "地址标签",
+            "default": "other"
+          },
+          "type": {
+            "enum": [
+              "domestic",
+              "overseas"
+            ],
+            "type": "string",
+            "description": "地址类型",
+            "default": "domestic"
+          },
+          "isDefault": {
+            "type": "number",
+            "enum": [
+              0,
+              1
+            ],
+            "description": "是否设为默认地址",
+            "default": false
+          },
+          "alias": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "地址别名"
+          },
+          "extra": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "扩展信息"
+          },
+          "id": {
+            "type": "number",
+            "description": "地址ID"
+          },
+          "version": {
+            "type": "number",
+            "description": "版本号（乐观锁）"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "BatchDeleteAddressDto": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "minItems": 1,
+            "maxItems": 100,
+            "description": "要删除的地址ID列表",
+            "example": [
+              1,
+              2,
+              3
+            ],
+            "type": "array",
+            "items": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1
+            }
+          }
+        },
+        "required": [
+          "ids"
+        ]
+      },
+      "BatchDeleteResultDto": {
+        "type": "object",
+        "properties": {
+          "successCount": {
+            "type": "number",
+            "description": "成功删除的数量",
+            "example": 2
+          },
+          "failCount": {
+            "type": "number",
+            "description": "失败的数量",
+            "example": 1
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "失败的ID列表及原因",
+            "example": {
+              "5": "地址不存在",
+              "8": "地址正在使用中"
+            }
+          },
+          "successIds": {
+            "description": "成功删除的ID列表",
+            "example": [
+              1,
+              2,
+              3
+            ],
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "required": [
+          "successCount",
+          "failCount",
+          "errors",
+          "successIds"
+        ]
       }
     }
   }

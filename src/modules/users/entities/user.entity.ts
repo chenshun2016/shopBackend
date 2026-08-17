@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Address } from 'src/modules/addresses/entities/address.entities';
+import { Address } from 'src/modules/addresses/entities/address.entity';
 
 export enum UserRole {
   CUSTOMER = 'customer',

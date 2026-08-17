@@ -1,4 +1,13 @@
-import { Controller, Get, Put, Body, UseGuards, Post, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Put,
+  Body,
+  UseGuards,
+  Post,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import {
@@ -19,7 +28,10 @@ export class AddressController {
 
   @Post()
   @ApiOperation({ summary: '新增地址' })
-  createAddress(@CurrentUser() user: UserPayload, @Body() dto: CreateAddressDto){
+  createAddress(
+    @CurrentUser() user: UserPayload,
+    @Body() dto: CreateAddressDto,
+  ) {
     return this.addressesService.createAddress(user.userId, dto);
   }
 
@@ -31,8 +43,11 @@ export class AddressController {
 
   @Get(':id')
   @ApiOperation({ summary: '获取用户地址详情' })
-  getUserAddressDetail(@CurrentUser() user: UserPayload, @Query('id') id: string){
-    return this.addressesService.getAddressDetail(user.userId, dto);
+  getUserAddressDetail(
+    @CurrentUser() user: UserPayload,
+    @Param('id') id: string,
+  ) {
+    return this.addressesService.getAddressDetail(user.userId, +id);
   }
 
   @Put()
@@ -41,15 +56,18 @@ export class AddressController {
     return this.addressesService.update(user.userId, dto);
   }
 
-  @Delete()
-  @ApiOperation({ summary: '删除地址' })
-  delete(@CurrentUser() user: UserPayload, @Query('id') id: string) {
-    return this.addressesService.delete(user.id, id);
-  }
-
   @Delete('batch')
   @ApiOperation({ summary: '批量删除地址' })
-  batchDelete(@CurrentUser() user: UserPayload, @Body() dto: BatchDeleteAddressDto){
-    return this.addressesService.batchDelete(user.id, dto);
+  batchDelete(
+    @CurrentUser() user: UserPayload,
+    @Body() dto: BatchDeleteAddressDto,
+  ) {
+    return this.addressesService.batchDelete(user.userId, dto);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: '删除地址' })
+  delete(@CurrentUser() user: UserPayload, @Param('id') id: string) {
+    return this.addressesService.delete(user.userId, +id);
   }
 }

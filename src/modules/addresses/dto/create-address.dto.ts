@@ -11,7 +11,7 @@ import {
   IsIn,
   IsObject,
 } from 'class-validator';
-import { AddressLabel, AddressType } from '../entities/address.entities';
+import { AddressLabel, AddressType } from '../entities/address.entity';
 
 export class CreateAddressDto {
   @ApiProperty({ description: '收货人姓名', maxLength: 20, example: '张三' })

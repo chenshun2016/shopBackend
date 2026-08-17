@@ -4,8 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { Address } from 'src/modules/addresses/entities/address.entities';
 
 export enum UserRole {
   CUSTOMER = 'customer',
@@ -25,6 +27,9 @@ export class User {
   @ApiProperty({ description: '邮箱' })
   @Column({ length: 100, unique: true })
   email: string;
+
+  @OneToMany(() => Address, (address) => address.user)
+  addresses: Address[]; // 这里必须是 Address[] 类型，不能是 any
 
   @Column({ name: 'password_hash', length: 255, select: false })
   passwordHash: string;

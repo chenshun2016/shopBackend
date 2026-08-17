@@ -1648,6 +1648,9 @@
           },
           "passwordHash": {
             "type": "string"
+          },
+          "addresses": {
+            "type": "object"
           }
         },
         "required": [
@@ -1657,7 +1660,8 @@
           "role",
           "createdAt",
           "updatedAt",
-          "passwordHash"
+          "passwordHash",
+          "addresses"
         ]
       },
       "UpdateUserDto": {

@@ -12,4 +12,7 @@ export class CreateSellerDto {
   @IsString() // 1. 必须是字符串
   @IsPhoneNumber('CN') // 2. 必须是中国大陆手机号格式 (自动校验 11 位)
   contactPhone: string;
+
+  // @ApiProperty({ description: '商家id' })
+  // userId: number;
 }

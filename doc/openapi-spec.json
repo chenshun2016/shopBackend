@@ -1699,6 +1699,43 @@
           "商家"
         ]
       }
+    },
+    "/api/sellers/create": {
+      "post": {
+        "operationId": "SellersController_createSeller",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSellerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Seller"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "创建商家",
+        "tags": [
+          "商家"
+        ]
+      }
     }
   },
   "info": {
@@ -3042,6 +3079,30 @@
           "userId",
           "shopName",
           "contactPhone"
+        ]
+      },
+      "CreateSellerDto": {
+        "type": "object",
+        "properties": {
+          "shopName": {
+            "type": "string",
+            "description": "商店名称",
+            "example": "喜德盛山地车"
+          },
+          "contactPhone": {
+            "type": "string",
+            "description": "联系电话",
+            "example": "18820128820"
+          },
+          "userId": {
+            "type": "number",
+            "description": "商家id"
+          }
+        },
+        "required": [
+          "shopName",
+          "contactPhone",
+          "userId"
         ]
       }
     }

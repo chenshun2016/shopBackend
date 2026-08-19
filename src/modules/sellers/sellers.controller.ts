@@ -1,7 +1,8 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { SellersService } from './sellers.service';
+import { CreateSellerDto } from './dto/create-seller-dto';
 import {
   CurrentUser,
   UserPayload,
@@ -17,7 +18,15 @@ export class SellersController {
   @Get('list')
   @ApiOperation({ summary: '获取商家信息' })
   getSellerList(@CurrentUser() user: UserPayload) {
-    console.log(user, 888222);
     return this.sellersService.getSellerList(user.userId);
+  }
+
+  @Post('create')
+  @ApiOperation({ summary: '创建商家' })
+  createSeller(
+    @CurrentUser() user: UserPayload,
+    @Body() data: CreateSellerDto,
+  ) {
+    return this.sellersService.createSeller({ ...data, userId: user.userId });
   }
 }

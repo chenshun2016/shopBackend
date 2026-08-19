@@ -1,4 +1,4 @@
-import { ApiPropertyOptional } from '@nestjs/swagger'; // 注意用 Optional
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'; // 注意用 Optional
 import {
   IsString,
   MaxLength,
@@ -12,7 +12,7 @@ export class UpdateSellerDto {
   @MinLength(4)
   @MaxLength(20)
   @IsString()
-  @IsOptional() // ⚠️ 加上这个，更新时不传就不会校验报错
+  @IsOptional() // 加上这个，更新时不传就不会校验报错
   shopName?: string;
 
   @ApiPropertyOptional({ description: '联系电话', example: '18820128820' })

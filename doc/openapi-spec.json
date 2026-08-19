@@ -1669,6 +1669,36 @@
           "用户地址"
         ]
       }
+    },
+    "/api/sellers/list": {
+      "get": {
+        "operationId": "SellersController_getSellerList",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Seller"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "获取商家信息",
+        "tags": [
+          "商家"
+        ]
+      }
     }
   },
   "info": {
@@ -2946,6 +2976,72 @@
           "failCount",
           "errors",
           "successIds"
+        ]
+      },
+      "Seller": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "主键自动产生"
+          },
+          "userId": {
+            "type": "number",
+            "description": "商家id"
+          },
+          "shopName": {
+            "type": "string",
+            "description": "店铺名"
+          },
+          "shopLogo": {
+            "type": "string",
+            "description": "店铺logo"
+          },
+          "contactPhone": {
+            "type": "string",
+            "description": "联系电话"
+          },
+          "status": {
+            "type": "number",
+            "description": "商家状态",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "avgRating": {
+            "type": "number",
+            "description": "平均分"
+          },
+          "totalSales": {
+            "type": "number",
+            "description": "销售总额"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "创建日期"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "更新日期"
+          },
+          "isDeleted": {
+            "type": "number",
+            "description": "逻辑删除标记：0-未删除，1-已删除",
+            "example": 0,
+            "default": 0
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "shopName",
+          "contactPhone"
         ]
       }
     }

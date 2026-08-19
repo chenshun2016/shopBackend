@@ -27,6 +27,6 @@ export class SellersController {
     @CurrentUser() user: UserPayload,
     @Body() data: CreateSellerDto,
   ) {
-    return this.sellersService.createSeller({ ...data, userId: user.userId });
+    return this.sellersService.createSeller(data, user.userId);
   }
 }

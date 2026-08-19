@@ -3096,7 +3096,7 @@
           },
           "userId": {
             "type": "number",
-            "description": "商家id"
+            "description": "商家id（可选，以登录用户为准）"
           }
         },
         "required": [

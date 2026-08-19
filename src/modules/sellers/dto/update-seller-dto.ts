@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'; // 注意用 Optional
+import { ApiPropertyOptional } from '@nestjs/swagger'; // 注意用 Optional
 import {
   IsString,
   MaxLength,

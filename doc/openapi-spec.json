@@ -1736,6 +1736,52 @@
           "商家"
         ]
       }
+    },
+    "/api/sellers/update/{id}": {
+      "post": {
+        "operationId": "SellersController_updateSeller",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSellerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Seller"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "更新商家",
+        "tags": [
+          "商家"
+        ]
+      }
     }
   },
   "info": {
@@ -3104,6 +3150,21 @@
           "contactPhone",
           "userId"
         ]
+      },
+      "UpdateSellerDto": {
+        "type": "object",
+        "properties": {
+          "shopName": {
+            "type": "string",
+            "description": "商店名称",
+            "example": "喜德盛山地车"
+          },
+          "contactPhone": {
+            "type": "string",
+            "description": "联系电话",
+            "example": "18820128820"
+          }
+        }
       }
     }
   }

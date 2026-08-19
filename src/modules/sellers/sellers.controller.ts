@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { SellersService } from './sellers.service';
 import { CreateSellerDto } from './dto/create-seller-dto';
+import { UpdateSellerDto } from './dto/update-seller-dto';
 import {
   CurrentUser,
   UserPayload,
@@ -28,5 +37,15 @@ export class SellersController {
     @Body() data: CreateSellerDto,
   ) {
     return this.sellersService.createSeller(data, user.userId);
+  }
+
+  @Post('update/:id')
+  @ApiOperation({ summary: '更新商家' })
+  updateSeller(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: UserPayload,
+    @Body() data: UpdateSellerDto,
+  ) {
+    return this.sellersService.updateSeller(id, data, user.userId);
   }
 }

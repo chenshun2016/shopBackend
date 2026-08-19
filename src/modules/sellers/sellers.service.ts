@@ -1,13 +1,16 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { Seller } from './entities/seller.entity';
 import { User, UserRole } from '../users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateSellerDto } from './dto/create-seller-dto';
+import { UpdateSellerDto } from './dto/update-seller-dto';
 
 @Injectable()
 export class SellersService {
@@ -30,7 +33,7 @@ export class SellersService {
     }
   }
 
-  async createSeller(data: CreateSellerDto, userId: number): Promise<Seller>{
+  async createSeller(data: CreateSellerDto, userId: number): Promise<Seller> {
     const existingSellerByName = await this.sellersRepository.findOne({
       where: { shopName: data.shopName },
     });
@@ -46,6 +49,30 @@ export class SellersService {
     }
     console.log(data, 222555);
     const seller = this.sellersRepository.create({ ...data, userId });
+    return this.sellersRepository.save(seller);
+  }
+
+  async updateSeller(
+    id: number,
+    data: UpdateSellerDto,
+    userId: number,
+  ): Promise<Seller> {
+    const seller = await this.sellersRepository.findOne({
+      where: { id, userId },
+    });
+    if (!seller) {
+      throw new NotFoundException('未找到该商家的店铺信息');
+    }
+    if (data.shopName === seller.shopName) {
+      throw new ConflictException('店名已被注册');
+    }
+    if (data.contactPhone === seller.contactPhone) {
+      throw new ConflictException('电话已被注册');
+    }
+    if (!data.shopName && !data.contactPhone) {
+      throw new BadRequestException('至少需要提供一个更新字段');
+    }
+    Object.assign(seller, data);
     return this.sellersRepository.save(seller);
   }
 }

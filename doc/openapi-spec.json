@@ -1782,6 +1782,35 @@
           "商家"
         ]
       }
+    },
+    "/api/sellers/delete/{id}": {
+      "delete": {
+        "operationId": "SellersController_delSeller",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "删除商家",
+        "tags": [
+          "商家"
+        ]
+      }
     }
   },
   "info": {
@@ -3114,6 +3143,10 @@
             "description": "更新日期"
           },
           "isDeleted": {
+            "enum": [
+              0,
+              1
+            ],
             "type": "number",
             "description": "逻辑删除标记：0-未删除，1-已删除",
             "example": 0,

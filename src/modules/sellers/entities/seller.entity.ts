@@ -16,6 +16,11 @@ export enum SellerStatus {
   FROZEN = 3, // 已冻结（违规/欠费等原因，暂时限制营业）
   CLOSED = 4, // 已关闭（主动关店或长期不经营）
 }
+
+export enum SellerDelStatus {
+  NO = 0, // 未删除
+  YES = 1, // 已删除
+}
 @Entity('seller')
 export class Seller {
   @ApiProperty({ description: '主键自动产生' })
@@ -71,5 +76,5 @@ export class Seller {
     default: 0,
     comment: '逻辑删除标记：0-未删除，1-已删除',
   })
-  isDeleted: number;
+  isDeleted: SellerDelStatus;
 }

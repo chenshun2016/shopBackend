@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -47,5 +48,14 @@ export class SellersController {
     @Body() data: UpdateSellerDto,
   ) {
     return this.sellersService.updateSeller(id, data, user.userId);
+  }
+
+  @Delete('delete/:id')
+  @ApiOperation({ summary: '删除商家' })
+  delSeller(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: UserPayload,
+  ) {
+    return this.sellersService.remove(id, user.userId);
   }
 }

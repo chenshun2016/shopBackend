@@ -11,6 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateSellerDto } from './dto/create-seller-dto';
 import { UpdateSellerDto } from './dto/update-seller-dto';
+import { SellerDelStatus } from './entities/seller.entity';
 
 @Injectable()
 export class SellersService {
@@ -24,10 +25,9 @@ export class SellersService {
   async getSellerList(userId: number): Promise<Seller[]> {
     // 这里要改成判断用户是管理员
     const user = await this.usersRepository.findOne({ where: { id: userId } });
-    console.log(user, 'uuuu');
     if (user?.role === UserRole.ADMIN) {
       const sellers = await this.sellersRepository.find({});
-      return sellers;
+      return sellers.filter((item) => item.isDeleted === SellerDelStatus.NO);
     } else {
       throw new ForbiddenException('无权限访问');
     }
@@ -47,7 +47,6 @@ export class SellersService {
     if (existingSellerByPhone) {
       throw new ConflictException(`电话 "${data.contactPhone}" 已绑定其他店铺`);
     }
-    console.log(data, 222555);
     const seller = this.sellersRepository.create({ ...data, userId });
     return this.sellersRepository.save(seller);
   }
@@ -74,5 +73,21 @@ export class SellersService {
     }
     Object.assign(seller, data);
     return this.sellersRepository.save(seller);
+  }
+
+  async remove(id: number, userId: number): Promise<void> {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (user?.role === UserRole.ADMIN) {
+      const seller = await this.sellersRepository.findOne({
+        where: { id },
+      });
+      if (!seller) {
+        throw new NotFoundException('未找到该商家的店铺信息');
+      }
+      seller.isDeleted = 1;
+      await this.sellersRepository.save(seller);
+    } else {
+      throw new ForbiddenException('无权限访问');
+    }
   }
 }

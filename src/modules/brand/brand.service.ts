@@ -1,17 +1,15 @@
 import {
   Injectable,
   NotFoundException,
-  ConflictException,
   BadRequestException,
   ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Brand } from './entities/brand.entity';
-import { User } from '../../users/entities/user.entity';
+import { User, UserRole } from '../users/entities/user.entity';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
-import { UserRole } from '../users/entities/user.entity';
 
 @Injectable()
 export class BrandService {

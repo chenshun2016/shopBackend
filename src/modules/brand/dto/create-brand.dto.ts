@@ -76,4 +76,5 @@ export class CreateBrandDto {
   @IsOptional()
   @Type(() => Number)
   categoryIds?: number[];
+  parentId: number;
 }

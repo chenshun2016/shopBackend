@@ -2194,6 +2194,11 @@
             "description": "品牌名称（中英文均可，全局唯一）",
             "example": "华为"
           },
+          "level": {
+            "type": "number",
+            "description": "品牌层级",
+            "example": "0"
+          },
           "nameEn": {
             "type": "string",
             "description": "品牌英文名（便于国际化展示）",
@@ -2276,15 +2281,36 @@
             "items": {
               "$ref": "#/components/schemas/Category"
             }
+          },
+          "parentId": {
+            "type": "number",
+            "description": "父品牌ID（NULL表示顶级品牌）",
+            "example": 1
+          },
+          "path": {
+            "type": "string"
+          },
+          "parent": {
+            "$ref": "#/components/schemas/Brand"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Brand"
+            }
           }
         },
         "required": [
           "id",
           "name",
+          "level",
           "status",
           "createdBy",
           "createdAt",
-          "updatedAt"
+          "updatedAt",
+          "path",
+          "parent",
+          "children"
         ]
       },
       "Category": {

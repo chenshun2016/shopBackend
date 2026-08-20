@@ -7,6 +7,9 @@ import {
   DeleteDateColumn,
   ManyToMany,
   JoinTable,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Category } from '../../categories/entities/category.entity';
@@ -41,6 +44,25 @@ export class Brand {
     comment: '品牌名称，全局唯一，用于前台展示和搜索',
   })
   name: string;
+
+  @ApiProperty({
+    description: '品牌层级',
+    example: '0',
+  })
+  @Column({
+    type: 'int',
+    default: 0,
+    comment: '层级深度，根节点为0',
+  })
+  level: number;
+
+  @Column({
+    type: 'varchar',
+    length: 500,
+    nullable: true,
+    comment: '路径枚举，如 /1/2/，用于快速查询所有子孙',
+  })
+  path: string;
 
   @ApiProperty({
     description: '品牌英文名（便于国际化展示）',
@@ -219,4 +241,26 @@ export class Brand {
     },
   })
   categories: Category[];
+
+  @ApiProperty({
+    description: '父品牌ID（NULL表示顶级品牌）',
+    required: false,
+    example: 1,
+  })
+  @Column({
+    type: 'bigint',
+    unsigned: true,
+    nullable: true,
+    default: 0, // ✅ 默认值为 0
+    comment: '父品牌ID，NULL表示根节点，用于实现品牌树形层级',
+  })
+  parentId: number;
+
+  // 可选：关联自身（方便查询时加载父/子）
+  @ManyToOne(() => Brand, (brand) => brand.children)
+  @JoinColumn({ name: 'parentId' })
+  parent: Brand;
+
+  @OneToMany(() => Brand, (brand) => brand.parent)
+  children: Brand[];
 }

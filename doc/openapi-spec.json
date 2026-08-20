@@ -2185,61 +2185,93 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "number"
+            "type": "number",
+            "description": "品牌ID（主键，自增）",
+            "example": 1
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "品牌名称（中英文均可，全局唯一）",
+            "example": "华为"
           },
           "nameEn": {
-            "type": "string"
+            "type": "string",
+            "description": "品牌英文名（便于国际化展示）",
+            "example": "Huawei"
           },
           "logoUrl": {
-            "type": "string"
+            "type": "string",
+            "description": "品牌Logo图片地址（CDN链接）",
+            "example": "https://cdn.example.com/huawei.png"
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "description": "品牌简介/品牌故事",
+            "example": "全球领先的ICT基础设施和智能终端提供商"
           },
           "website": {
-            "type": "string"
+            "type": "string",
+            "description": "品牌官网地址",
+            "example": "https://www.huawei.com"
           },
           "status": {
-            "type": "number",
             "enum": [
               0,
               1,
               2,
               3
-            ]
+            ],
+            "type": "number",
+            "description": "品牌状态：0-待审核，1-已上架，2-已驳回，3-已下架",
+            "default": 0,
+            "example": 1
           },
           "auditRemark": {
-            "type": "string"
+            "type": "string",
+            "description": "审核备注（驳回原因填写于此）",
+            "example": "商标注册证不清晰，请重新上传"
           },
           "auditTime": {
             "format": "date-time",
-            "type": "string"
+            "type": "string",
+            "description": "审核时间",
+            "example": "2026-08-20 14:30:00"
           },
           "auditorId": {
-            "type": "number"
+            "type": "number",
+            "description": "审核人ID（关联管理员表）",
+            "example": 10001
           },
           "createdBy": {
-            "type": "number"
+            "type": "number",
+            "description": "创建人ID（关联管理员表）",
+            "example": 10001
           },
           "updatedBy": {
-            "type": "number"
+            "type": "number",
+            "description": "最后更新人ID（关联管理员表）",
+            "example": 10002
           },
           "createdAt": {
             "format": "date-time",
-            "type": "string"
+            "type": "string",
+            "description": "创建时间",
+            "example": "2026-08-20 10:00:00"
           },
           "updatedAt": {
             "format": "date-time",
-            "type": "string"
+            "type": "string",
+            "description": "最后更新时间",
+            "example": "2026-08-20 15:30:00"
           },
           "deletedAt": {
             "format": "date-time",
-            "type": "string"
+            "type": "string",
+            "description": "软删除时间（NULL表示未删除）",
+            "example": "2026-08-20 18:00:00"
           },
           "categories": {
+            "description": "关联的分类列表（多对多，一个品牌可属于多个分类）",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Category"
@@ -2249,20 +2281,10 @@
         "required": [
           "id",
           "name",
-          "nameEn",
-          "logoUrl",
-          "description",
-          "website",
           "status",
-          "auditRemark",
-          "auditTime",
-          "auditorId",
           "createdBy",
-          "updatedBy",
           "createdAt",
-          "updatedAt",
-          "deletedAt",
-          "categories"
+          "updatedAt"
         ]
       },
       "Category": {

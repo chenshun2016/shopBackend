@@ -2181,6 +2181,90 @@
           }
         }
       },
+      "Brand": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "nameEn": {
+            "type": "string"
+          },
+          "logoUrl": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          },
+          "status": {
+            "type": "number",
+            "enum": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          "auditRemark": {
+            "type": "string"
+          },
+          "auditTime": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "auditorId": {
+            "type": "number"
+          },
+          "createdBy": {
+            "type": "number"
+          },
+          "updatedBy": {
+            "type": "number"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "deletedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "nameEn",
+          "logoUrl",
+          "description",
+          "website",
+          "status",
+          "auditRemark",
+          "auditTime",
+          "auditorId",
+          "createdBy",
+          "updatedBy",
+          "createdAt",
+          "updatedAt",
+          "deletedAt",
+          "categories"
+        ]
+      },
       "Category": {
         "type": "object",
         "properties": {
@@ -2218,6 +2302,12 @@
             "items": {
               "$ref": "#/components/schemas/Category"
             }
+          },
+          "brands": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Brand"
+            }
           }
         },
         "required": [
@@ -2226,7 +2316,8 @@
           "createdAt",
           "updatedAt",
           "parent",
-          "children"
+          "children",
+          "brands"
         ]
       },
       "Product": {

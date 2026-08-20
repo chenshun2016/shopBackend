@@ -7,8 +7,11 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { Brand } from '../../brand/entities/brand.entity';
 
 @Entity('categories')
 export class Category {
@@ -44,4 +47,13 @@ export class Category {
   @ApiProperty({ description: '更新时间' })
   @UpdateDateColumn()
   updatedAt: Date;
+
+  // 多对多关联分类（需要你已经有 Category 实体）
+  @ManyToMany(() => Brand, (brand) => brand.categories)
+  // @JoinTable({ // 一张表写即可？
+  //   name: 'brand_category_relation',
+  //   joinColumn: { name: 'category_id', referencedColumnName: 'id' },
+  //   inverseJoinColumn: { name: 'brand_id', referencedColumnName: 'id' },
+  // })
+  brands: Brand[];
 }

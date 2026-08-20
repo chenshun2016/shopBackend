@@ -4,6 +4,10 @@ import { BrandService } from './brand.service';
 import { Public } from '../../common/decorators/public.decorator';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { CreateBrandDto } from './dto/create-brand.dto';
+import {
+  CurrentUser,
+  UserPayload,
+} from 'src/common/decorators/current-user.decorator';
 
 @ApiTags('品牌')
 @Controller('brands')
@@ -14,7 +18,10 @@ export class BrandController {
 
   @Post('create')
   @ApiOperation({ summary: '创建品牌' })
-  createBrand(@Body() CreateBrandDto: CreateBrandDto) {
-    return this.brandService.createBrand(CreateBrandDto);
+  createBrand(
+    @Body() CreateBrandDto: CreateBrandDto,
+    @CurrentUser() user: UserPayload,
+  ) {
+    return this.brandService.createBrand(CreateBrandDto, user.userId);
   }
 }

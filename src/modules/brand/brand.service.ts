@@ -3,18 +3,22 @@ import {
   NotFoundException,
   ConflictException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Brand } from './entities/brand.entity';
+import { User } from '../../users/entities/user.entity';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
+import { UserRole } from '../users/entities/user.entity';
 
 @Injectable()
 export class BrandService {
   constructor(
     @InjectRepository(Brand)
     private readonly brandsRepository: Repository<Brand>,
+    private readonly usersRepository: Repository<User>,
   ) {}
 
   async getBrandAll(parentId: number = 0): Promise<Brand[]> {
@@ -29,7 +33,20 @@ export class BrandService {
     return brands;
   }
 
-  async createBrand(createBrandDto: CreateBrandDto): Promise<Brand> {
+  async createBrand(
+    createBrandDto: CreateBrandDto,
+    userId: number,
+  ): Promise<Brand> {
+    const currentUser = await this.usersRepository.findOne({
+      where: { id: userId },
+    });
+    // 必须检查 null
+    if (!currentUser) {
+      throw new NotFoundException('用户不存在');
+    }
+    if (currentUser.role !== UserRole.ADMIN) {
+      throw new ForbiddenException('只有管理员可以创建品牌');
+    }
     // 1. 检查品牌名称是否已存在
     const existingBrand = await this.brandsRepository.findOne({
       where: { name: createBrandDto.name },

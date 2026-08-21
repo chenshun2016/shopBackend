@@ -5,9 +5,10 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Brand } from './entities/brand.entity';
 import { User, UserRole } from '../users/entities/user.entity';
+import { Category } from '../categories/entities/category.entity';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 
@@ -18,6 +19,8 @@ export class BrandService {
     private readonly brandsRepository: Repository<Brand>,
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @InjectRepository(Category)
+    private readonly categoriesRepository: Repository<Category>,
   ) {}
 
   async getBrandAll(parentId: number = 0): Promise<Brand[]> {
@@ -54,7 +57,6 @@ export class BrandService {
       throw new BadRequestException(`品牌名称 "${createBrandDto.name}" 已存在`);
     }
 
-    console.log(createBrandDto, 'createBrandDto111');
     // 2. 处理父品牌逻辑
     const parentId = createBrandDto.parentId ?? 0; // 默认顶级品牌
     let level = 0;
@@ -84,6 +86,7 @@ export class BrandService {
       ...createBrandDto,
       parentId: parentId,
       level: level,
+      createdBy: userId,
     });
 
     // 4. 保存品牌（先保存获取 id）
@@ -98,7 +101,20 @@ export class BrandService {
       savedBrand.path = `${parent.path}${savedBrand.id}/`;
     }
 
-    // 6. 最终保存
+    // 5.5 关联分类（可选）：写入 brand_category_relation 关联表
+    if (createBrandDto.categoryIds?.length) {
+      const ids = [...new Set(createBrandDto.categoryIds)];
+      const categories = await this.categoriesRepository.findBy({
+        id: In(ids),
+      });
+      if (categories.length !== ids.length) {
+        throw new BadRequestException('部分分类不存在，请检查 categoryIds');
+      }
+      console.log(categories, 'categories123');
+      savedBrand.categories = categories;
+    }
+
+    // 6. 最终保存（同时写入品牌-分类关联）
     return this.brandsRepository.save(savedBrand);
   }
 }

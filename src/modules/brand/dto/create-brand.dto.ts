@@ -82,5 +82,6 @@ export class CreateBrandDto {
     type: [Number],
     required: false,
   })
+  @IsOptional()
   parentId?: number;
 }

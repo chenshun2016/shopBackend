@@ -1,7 +1,6 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { BrandService } from './brand.service';
-import { Public } from '../../common/decorators/public.decorator';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import {
@@ -22,7 +21,6 @@ export class BrandController {
     @Body() CreateBrandDto: CreateBrandDto,
     @CurrentUser() user: UserPayload,
   ) {
-    console.log(CreateBrandDto, 'CreateBrandDto222');
     return this.brandService.createBrand(CreateBrandDto, user.userId);
   }
 }

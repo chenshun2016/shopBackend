@@ -54,6 +54,7 @@ export class BrandService {
       throw new BadRequestException(`品牌名称 "${createBrandDto.name}" 已存在`);
     }
 
+    console.log(createBrandDto, 'createBrandDto111');
     // 2. 处理父品牌逻辑
     const parentId = createBrandDto.parentId ?? 0; // 默认顶级品牌
     let level = 0;

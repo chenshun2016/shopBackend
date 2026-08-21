@@ -76,5 +76,11 @@ export class CreateBrandDto {
   @IsOptional()
   @Type(() => Number)
   categoryIds?: number[];
-  parentId: number;
+
+  @ApiProperty({
+    description: '品牌父级id，默认0，0是最顶级品牌',
+    type: [Number],
+    required: false,
+  })
+  parentId?: number;
 }

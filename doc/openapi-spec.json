@@ -3422,12 +3422,15 @@
             }
           },
           "parentId": {
-            "type": "number"
+            "description": "品牌父级id，默认0，0是最顶级品牌",
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
           }
         },
         "required": [
-          "name",
-          "parentId"
+          "name"
         ]
       }
     }

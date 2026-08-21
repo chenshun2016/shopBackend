@@ -22,6 +22,7 @@ export class BrandController {
     @Body() CreateBrandDto: CreateBrandDto,
     @CurrentUser() user: UserPayload,
   ) {
+    console.log(CreateBrandDto, 'CreateBrandDto222');
     return this.brandService.createBrand(CreateBrandDto, user.userId);
   }
 }

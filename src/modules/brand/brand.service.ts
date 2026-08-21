@@ -16,6 +16,7 @@ export class BrandService {
   constructor(
     @InjectRepository(Brand)
     private readonly brandsRepository: Repository<Brand>,
+    @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
   ) {}
 

@@ -117,4 +117,151 @@ export class BrandService {
     // 6. 最终保存（同时写入品牌-分类关联）
     return this.brandsRepository.save(savedBrand);
   }
+
+  async updateBrand(
+    updateBrandDto: UpdateBrandDto,
+    userId: number,
+  ): Promise<Brand | null> {
+    // 1. 验证用户权限
+    const currentUser = await this.usersRepository.findOne({
+      where: { id: userId },
+    });
+    if (!currentUser) {
+      throw new NotFoundException('用户不存在');
+    }
+    if (currentUser.role !== UserRole.ADMIN) {
+      throw new ForbiddenException('只有管理员可以更新品牌');
+    }
+    // 2. 查询要更新的品牌
+    const curBrand = await this.brandsRepository.findOne({
+      where: { id: updateBrandDto.id },
+      relations: {
+        categories: true, // 加载分类关联
+      }, // 加载关联的分类
+    });
+    if (!curBrand) {
+      throw new NotFoundException('没有找到该品牌');
+    }
+    // 3. 检查品牌名称是否冲突（如果要更新名称）
+    if (updateBrandDto.name && updateBrandDto.name !== curBrand.name) {
+      const existingBrand = await this.brandsRepository.findOne({
+        where: { name: updateBrandDto.name },
+      });
+      if (existingBrand && existingBrand.id !== curBrand.id) {
+        throw new BadRequestException(
+          `品牌名称 "${updateBrandDto.name}" 已存在`,
+        );
+      }
+    }
+    // 4. 处理父品牌变更
+    let level = curBrand.level;
+    let path = curBrand.path;
+    if (
+      updateBrandDto.parentId !== undefined &&
+      updateBrandDto.parentId !== curBrand.parentId
+    ) {
+      const parentId = updateBrandDto.parentId ?? 0;
+
+      if (parentId === 0) {
+        // 变更为顶级品牌
+        level = 0;
+        path = `/${curBrand.id}/`;
+      } else {
+        // 检查新父品牌是否存在
+        const parent = await this.brandsRepository.findOne({
+          where: { id: parentId },
+          select: { id: true, level: true, path: true },
+        });
+        if (!parent) {
+          throw new NotFoundException(`父品牌 ID ${parentId} 不存在`);
+        }
+        // 防止将品牌设置为自己或自己的子品牌作为父品牌
+        if (parentId === curBrand.id) {
+          throw new BadRequestException('不能将品牌自身设为父品牌');
+        }
+        // 检查是否循环引用（父品牌的 path 中是否包含当前品牌的 id）
+        if (parent.path && parent.path.includes(`/${curBrand.id}/`)) {
+          throw new BadRequestException(
+            '不能将子品牌设为父品牌，会造成循环引用',
+          );
+        }
+
+        level = parent.level + 1;
+        path = `${parent.path}${curBrand.id}/`;
+      }
+    }
+
+    // 5. 更新品牌基本信息
+    Object.assign(curBrand, {
+      ...updateBrandDto,
+      level: level,
+      path: path,
+      updatedBy: userId,
+      updatedAt: new Date(),
+    });
+
+    // 6. 处理分类关联更新
+    if (updateBrandDto.categoryIds !== undefined) {
+      const categoryIds = updateBrandDto.categoryIds;
+
+      if (!categoryIds || categoryIds.length === 0) {
+        // 清空所有分类关联
+        curBrand.categories = [];
+      } else {
+        // 去重并查询分类
+        const ids = [...new Set(categoryIds)];
+        const categories = await this.categoriesRepository.findBy({
+          id: In(ids),
+        });
+        if (categories.length !== ids.length) {
+          throw new BadRequestException('部分分类不存在，请检查 categoryIds');
+        }
+        // 更新分类关联（直接赋值，TypeORM 会自动处理中间表）
+        curBrand.categories = categories;
+      }
+    }
+
+    // 7. 保存更新（TypeORM 会同时更新品牌信息和中间表）
+    await this.brandsRepository.save(curBrand);
+
+    // 8. 如果父品牌变更，需要递归更新所有子品牌的 path 和 level
+    if (
+      updateBrandDto.parentId !== undefined &&
+      updateBrandDto.parentId !== curBrand.parentId
+    ) {
+      await this.updateChildrenPaths(curBrand.id, path, level + 1);
+    }
+
+    // 9. 返回更新后的完整数据
+    return this.brandsRepository.findOne({
+      where: { id: curBrand.id },
+      relations: {
+        categories: true, // 加载分类关联
+      },
+    });
+  }
+
+  // 辅助方法：递归更新子品牌的 path 和 level
+  private async updateChildrenPaths(
+    parentId: number,
+    parentPath: string,
+    nextLevel: number,
+  ): Promise<void> {
+    const children = await this.brandsRepository.find({
+      where: { parentId: parentId },
+    });
+
+    for (const child of children) {
+      const newPath = `${parentPath}${child.id}/`;
+      const newLevel = nextLevel;
+
+      await this.brandsRepository.update(child.id, {
+        path: newPath,
+        level: newLevel,
+      });
+
+      // 递归更新孙品牌
+      await this.updateChildrenPaths(child.id, newPath, newLevel + 1);
+    }
+  }
 }

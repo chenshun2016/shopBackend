@@ -7,6 +7,7 @@ import {
   MaxLength,
   IsUrl,
   ArrayMinSize,
+  IsInt,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -17,6 +18,15 @@ import { CreateBrandDto } from './create-brand.dto';
  * 仅待审核/已驳回状态的品牌可编辑
  */
 export class UpdateBrandDto extends PartialType(CreateBrandDto) {
+  @ApiProperty({
+    description: '品牌id',
+    example: 1,
+    maxLength: 100,
+    required: true,
+  })
+  IsInt;
+  id: number;
+
   @ApiProperty({
     description: '品牌名称',
     example: '华为技术有限公司',

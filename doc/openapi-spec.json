@@ -1848,6 +1848,82 @@
           "品牌"
         ]
       }
+    },
+    "/api/brands/update": {
+      "post": {
+        "operationId": "BrandController_updateBrand",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBrandDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "更新品牌",
+        "tags": [
+          "品牌"
+        ]
+      }
+    },
+    "/api/brands/getListByParentId": {
+      "get": {
+        "operationId": "BrandController_getBrands",
+        "parameters": [
+          {
+            "name": "parentId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Brand"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "通过parentId查询品牌，不传parentId默认为0",
+        "tags": [
+          "品牌"
+        ]
+      }
     }
   },
   "info": {
@@ -3431,6 +3507,74 @@
         },
         "required": [
           "name"
+        ]
+      },
+      "UpdateBrandDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "品牌名称",
+            "example": "华为技术有限公司"
+          },
+          "nameEn": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "品牌英文名称",
+            "example": "Huawei Technologies"
+          },
+          "logoUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "品牌Logo图片地址",
+            "example": "https://cdn.example.com/huawei-new.png"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "品牌简介",
+            "example": "全球领先的ICT（信息与通信）基础设施提供商"
+          },
+          "website": {
+            "type": "string",
+            "format": "uri",
+            "description": "品牌官网地址",
+            "example": "https://www.huawei.com/cn"
+          },
+          "categoryIds": {
+            "minItems": 1,
+            "description": "关联的分类ID列表（更新时会替换原有关联）",
+            "example": [
+              1,
+              3,
+              5
+            ],
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "parentId": {
+            "description": "品牌父级id，默认0，0是最顶级品牌",
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "IsInt": {
+            "type": "object",
+            "description": "品牌id",
+            "example": 1,
+            "maxLength": 100
+          },
+          "id": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "IsInt",
+          "id"
         ]
       }
     }

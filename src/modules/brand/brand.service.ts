@@ -264,4 +264,59 @@ export class BrandService {
       await this.updateChildrenPaths(child.id, newPath, newLevel + 1);
     }
   }
+
+  // 查品牌树形结构
+  async getBrandsTree(): Promise<any> => {
+    try {
+      // 1. 先从数据库获取所有品牌数据（假设品牌有父子关系）
+      const brands = await this.brandsRepository.find({
+        where: { isDeleted: false },
+        order: { sortOrder: 'ASC', createTime: 'ASC' }
+      });
+
+      // 2. 构建树形结构
+      const tree = this.buildTree(brands);
+      
+      return {
+        code: 200,
+        data: tree,
+        message: '获取品牌树成功'
+      };
+    } catch (error) {
+      console.error('获取品牌树失败:', error);
+      throw new Error('获取品牌树失败');
+    }
+  }
+
+  /**
+   * 构建树形结构（递归）
+   */
+  private buildTree(items: any[], parentId: string | null = null): any[] {
+    const result: any[] = [];
+    
+    for (const item of items) {
+      // 找到当前节点的子节点
+      if (item.parentId === parentId) {
+        const children = this.buildTree(items, item.id);
+        
+        // 构建节点对象
+        const node = {
+          id: item.id,
+          name: item.name,
+          code: item.code,
+          level: item.level,
+          sortOrder: item.sortOrder,
+          icon: item.icon,
+          status: item.status,
+          // 如果有子节点才添加children字段
+          ...(children.length > 0 && { children })
+        };
+        
+        result.push(node);
+      }
+    }
+    
+    return result;
+  }
 }
+

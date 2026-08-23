@@ -1,8 +1,9 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { BrandService } from './brand.service';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { CreateBrandDto } from './dto/create-brand.dto';
+import { UpdateBrandDto } from './dto/update-brand.dto';
 import {
   CurrentUser,
   UserPayload,
@@ -22,5 +23,20 @@ export class BrandController {
     @CurrentUser() user: UserPayload,
   ) {
     return this.brandService.createBrand(CreateBrandDto, user.userId);
+  }
+
+  @Post('update')
+  @ApiOperation({ summary: '更新品牌' })
+  updateBrand(
+    @Body() UpdateBrandDto: UpdateBrandDto,
+    @CurrentUser() user: UserPayload,
+  ) {
+    return this.brandService.updateBrand(UpdateBrandDto, user.userId);
+  }
+
+  @Get('getListByParentId')
+  @ApiOperation({ summary: '通过parentId查询品牌，不传parentId默认为0' })
+  getBrands(@Query('parentId') parentId: number) {
+    return this.brandService.getBrandAll(parentId);
   }
 }

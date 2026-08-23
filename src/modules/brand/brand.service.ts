@@ -12,6 +12,18 @@ import { Category } from '../categories/entities/category.entity';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 
+// 在文件顶部定义类型（在 class 外面）
+interface BrandTreeNode {
+  id: number;
+  name: string;
+  code?: string;
+  level: number;
+  sortOrder?: number;
+  icon?: string;
+  status?: string;
+  children?: BrandTreeNode[];
+}
+
 @Injectable()
 export class BrandService {
   constructor(
@@ -266,21 +278,20 @@ export class BrandService {
   }
 
   // 查品牌树形结构
-  async getBrandsTree(): Promise<any> => {
+  async getBrandsTree(): Promise<any> {
     try {
       // 1. 先从数据库获取所有品牌数据（假设品牌有父子关系）
       const brands = await this.brandsRepository.find({
-        where: { isDeleted: false },
-        order: { sortOrder: 'ASC', createTime: 'ASC' }
+        order: { createdAt: 'ASC' },
       });
 
       // 2. 构建树形结构
       const tree = this.buildTree(brands);
-      
+
       return {
         code: 200,
         data: tree,
-        message: '获取品牌树成功'
+        message: '获取品牌树成功',
       };
     } catch (error) {
       console.error('获取品牌树失败:', error);
@@ -291,14 +302,14 @@ export class BrandService {
   /**
    * 构建树形结构（递归）
    */
-  private buildTree(items: any[], parentId: string | null = null): any[] {
+  private buildTree(items: any[], parentId: number = 0): BrandTreeNode[] {
     const result: any[] = [];
-    
+
     for (const item of items) {
       // 找到当前节点的子节点
       if (item.parentId === parentId) {
         const children = this.buildTree(items, item.id);
-        
+
         // 构建节点对象
         const node = {
           id: item.id,
@@ -309,14 +320,13 @@ export class BrandService {
           icon: item.icon,
           status: item.status,
           // 如果有子节点才添加children字段
-          ...(children.length > 0 && { children })
+          ...(children.length > 0 && { children }),
         };
-        
+
         result.push(node);
       }
     }
-    
+
     return result;
   }
 }
-

@@ -1924,6 +1924,26 @@
           "品牌"
         ]
       }
+    },
+    "/api/brands/brandsTree": {
+      "get": {
+        "operationId": "BrandController_getBrandTree",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "查树形结构",
+        "tags": [
+          "品牌"
+        ]
+      }
     }
   },
   "info": {

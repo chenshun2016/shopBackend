@@ -39,4 +39,10 @@ export class BrandController {
   getBrands(@Query('parentId') parentId: number) {
     return this.brandService.getBrandAll(parentId);
   }
+
+  @Get('brandsTree')
+  @ApiOperation({ summary: '查树形结构' })
+  getTreeddd() {
+    return this.brandService.getBrandsTree();
+  }
 }

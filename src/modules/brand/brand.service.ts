@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { Brand } from './entities/brand.entity';
+import { Brand, BrandStatus } from './entities/brand.entity';
 import { User, UserRole } from '../users/entities/user.entity';
 import { Category } from '../categories/entities/category.entity';
 import { CreateBrandDto } from './dto/create-brand.dto';
@@ -16,11 +16,8 @@ import { UpdateBrandDto } from './dto/update-brand.dto';
 interface BrandTreeNode {
   id: number;
   name: string;
-  code?: string;
   level: number;
-  sortOrder?: number;
-  icon?: string;
-  status?: string;
+  status?: BrandStatus;
   children?: BrandTreeNode[];
 }
 
@@ -278,7 +275,11 @@ export class BrandService {
   }
 
   // 查品牌树形结构
-  async getBrandsTree(): Promise<any> {
+  async getBrandsTree(): Promise<{
+    code: number;
+    data: BrandTreeNode[];
+    message: string;
+  }> {
     try {
       // 1. 先从数据库获取所有品牌数据（假设品牌有父子关系）
       const brands = await this.brandsRepository.find({
@@ -302,8 +303,8 @@ export class BrandService {
   /**
    * 构建树形结构（递归）
    */
-  private buildTree(items: any[], parentId: number = 0): BrandTreeNode[] {
-    const result: any[] = [];
+  private buildTree(items: Brand[], parentId: number = 0): BrandTreeNode[] {
+    const result: BrandTreeNode[] = [];
 
     for (const item of items) {
       // 找到当前节点的子节点
@@ -311,13 +312,10 @@ export class BrandService {
         const children = this.buildTree(items, item.id);
 
         // 构建节点对象
-        const node = {
+        const node: BrandTreeNode = {
           id: item.id,
           name: item.name,
-          code: item.code,
           level: item.level,
-          sortOrder: item.sortOrder,
-          icon: item.icon,
           status: item.status,
           // 如果有子节点才添加children字段
           ...(children.length > 0 && { children }),

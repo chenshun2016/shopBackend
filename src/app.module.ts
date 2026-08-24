@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
-import * as redisStore from 'cache-manager-redis-yet';
-// import type { RedisClientOptions } from '@keyv/redis';
+import Keyv from 'keyv';
+import KeyvRedis from '@keyv/redis';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
@@ -42,7 +42,7 @@ import { BrandModule } from './modules/brand/brand.module';
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: () => ({
-        stores: [new redisStore('redis://localhost:6379')],
+        stores: [new Keyv({ store: new KeyvRedis('redis://localhost:6379') })],
         ttl: 60000, // 默认 60 秒
       }),
     }),

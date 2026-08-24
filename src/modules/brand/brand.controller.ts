@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { BrandService } from './brand.service';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
@@ -19,19 +19,19 @@ export class BrandController {
   @Post('create')
   @ApiOperation({ summary: '创建品牌' })
   createBrand(
-    @Body() CreateBrandDto: CreateBrandDto,
+    @Body() createBrandDto: CreateBrandDto,
     @CurrentUser() user: UserPayload,
   ) {
-    return this.brandService.createBrand(CreateBrandDto, user.userId);
+    return this.brandService.createBrand(createBrandDto, user.userId);
   }
 
   @Post('update')
   @ApiOperation({ summary: '更新品牌' })
   updateBrand(
-    @Body() UpdateBrandDto: UpdateBrandDto,
+    @Body() updateBrandDto: UpdateBrandDto,
     @CurrentUser() user: UserPayload,
   ) {
-    return this.brandService.updateBrand(UpdateBrandDto, user.userId);
+    return this.brandService.updateBrand(updateBrandDto, user.userId);
   }
 
   @Get('getListByParentId')
@@ -42,7 +42,14 @@ export class BrandController {
 
   @Get('brandsTree')
   @ApiOperation({ summary: '查树形结构' })
-  getTreeddd() {
+  getBrandsTree() {
     return this.brandService.getBrandsTree();
+  }
+
+  @Delete('delete/:id')
+  @ApiOperation({ summary: '删除品牌' })
+  delBrand(@Param('id', ParseIntPipe) id: number) {
+    console.log(id, 'idsss');
+    return this.brandService.deleteBrands(id);
   }
 }

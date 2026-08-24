@@ -13,7 +13,7 @@ import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 
 // 在文件顶部定义类型（在 class 外面）
-interface BrandTreeNode {
+export interface BrandTreeNode {
   id: number;
   name: string;
   level: number;
@@ -285,9 +285,11 @@ export class BrandService {
       const brands = await this.brandsRepository.find({
         order: { createdAt: 'ASC' },
       });
+      console.log(brands, '22222');
 
       // 2. 构建树形结构
       const tree = this.buildTree(brands);
+      console.log(tree, 'tree11');
 
       return {
         code: 200,
@@ -308,7 +310,7 @@ export class BrandService {
 
     for (const item of items) {
       // 找到当前节点的子节点
-      if (item.parentId === parentId) {
+      if (item.parentId == parentId) {
         const children = this.buildTree(items, item.id);
 
         // 构建节点对象
@@ -326,5 +328,23 @@ export class BrandService {
     }
 
     return result;
+  }
+
+  async deleteBrands(brandId: number): Promise<void> {
+    console.log(brandId, 227711);
+    const brand = await this.brandsRepository.findOne({
+      where: { id: brandId },
+    });
+    console.log(brand, '1111');
+    if (!brand) {
+      throw new NotFoundException(`找不到该品牌,id:${brandId}`);
+    }
+    await this.brandsRepository.softDelete({ id: brandId });
+    const children = await this.brandsRepository.find({
+      where: { parentId: brandId },
+    });
+    for (const child of children) {
+      await this.deleteBrands(child.id);
+    }
   }
 }

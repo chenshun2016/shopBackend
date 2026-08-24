@@ -1927,7 +1927,7 @@
     },
     "/api/brands/brandsTree": {
       "get": {
-        "operationId": "BrandController_getBrandTree",
+        "operationId": "BrandController_getBrandsTree",
         "parameters": [],
         "responses": {
           "200": {
@@ -1940,6 +1940,35 @@
           }
         ],
         "summary": "查树形结构",
+        "tags": [
+          "品牌"
+        ]
+      }
+    },
+    "/api/brands/delete/{id}": {
+      "delete": {
+        "operationId": "BrandController_delBrand",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "删除品牌",
         "tags": [
           "品牌"
         ]

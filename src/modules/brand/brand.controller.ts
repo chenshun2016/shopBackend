@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { BrandService } from './brand.service';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
@@ -48,8 +58,10 @@ export class BrandController {
 
   @Delete('delete/:id')
   @ApiOperation({ summary: '删除品牌' })
-  delBrand(@Param('id', ParseIntPipe) id: number) {
-    console.log(id, 'idsss');
-    return this.brandService.deleteBrands(id);
+  delBrand(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: UserPayload,
+  ) {
+    return this.brandService.deleteBrands(id, user.userId);
   }
 }

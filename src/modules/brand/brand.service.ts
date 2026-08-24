@@ -11,6 +11,7 @@ import { User, UserRole } from '../users/entities/user.entity';
 import { Category } from '../categories/entities/category.entity';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
+import { logBrandOperation } from 'src/common/logger/file-logger';
 
 // 在文件顶部定义类型（在 class 外面）
 export interface BrandTreeNode {
@@ -45,6 +46,31 @@ export class BrandService {
   }
 
   async createBrand(
+    createBrandDto: CreateBrandDto,
+    userId: number,
+  ): Promise<Brand> {
+    try {
+      const brand = await this.createBrandInternal(createBrandDto, userId);
+      logBrandOperation({
+        operation: 'create',
+        operatorId: userId,
+        brandId: brand.id,
+        brandName: brand.name,
+        success: true,
+      });
+      return brand;
+    } catch (error) {
+      logBrandOperation({
+        operation: 'create',
+        operatorId: userId,
+        success: false,
+        message: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
+    }
+  }
+
+  private async createBrandInternal(
     createBrandDto: CreateBrandDto,
     userId: number,
   ): Promise<Brand> {
@@ -119,7 +145,6 @@ export class BrandService {
       if (categories.length !== ids.length) {
         throw new BadRequestException('部分分类不存在，请检查 categoryIds');
       }
-      console.log(categories, 'categories123');
       savedBrand.categories = categories;
     }
 
@@ -285,11 +310,9 @@ export class BrandService {
       const brands = await this.brandsRepository.find({
         order: { createdAt: 'ASC' },
       });
-      console.log(brands, '22222');
 
       // 2. 构建树形结构
       const tree = this.buildTree(brands);
-      console.log(tree, 'tree11');
 
       return {
         code: 200,
@@ -330,21 +353,44 @@ export class BrandService {
     return result;
   }
 
-  async deleteBrands(brandId: number): Promise<void> {
-    console.log(brandId, 227711);
+  async deleteBrands(brandId: number, userId?: number): Promise<void> {
+    try {
+      await this.deleteBrandsInternal(brandId, userId);
+    } catch (error) {
+      logBrandOperation({
+        operation: 'delete',
+        operatorId: userId,
+        brandId: brandId,
+        success: false,
+        message: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
+    }
+  }
+
+  private async deleteBrandsInternal(
+    brandId: number,
+    userId?: number,
+  ): Promise<void> {
     const brand = await this.brandsRepository.findOne({
       where: { id: brandId },
     });
-    console.log(brand, '1111');
     if (!brand) {
       throw new NotFoundException(`找不到该品牌,id:${brandId}`);
     }
     await this.brandsRepository.softDelete({ id: brandId });
+    logBrandOperation({
+      operation: 'delete',
+      operatorId: userId,
+      brandId: brandId,
+      brandName: brand.name,
+      success: true,
+    });
     const children = await this.brandsRepository.find({
       where: { parentId: brandId },
     });
     for (const child of children) {
-      await this.deleteBrands(child.id);
+      await this.deleteBrandsInternal(child.id, userId);
     }
   }
 }

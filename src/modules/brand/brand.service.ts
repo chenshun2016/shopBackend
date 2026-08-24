@@ -11,7 +11,7 @@ import { User, UserRole } from '../users/entities/user.entity';
 import { Category } from '../categories/entities/category.entity';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
-import { logBrandOperation } from 'src/common/logger/file-logger';
+import { logOperation } from 'src/common/logger/file-logger';
 
 // 在文件顶部定义类型（在 class 外面）
 export interface BrandTreeNode {
@@ -51,16 +51,18 @@ export class BrandService {
   ): Promise<Brand> {
     try {
       const brand = await this.createBrandInternal(createBrandDto, userId);
-      logBrandOperation({
+      logOperation({
+        module: 'brand',
         operation: 'create',
         operatorId: userId,
-        brandId: brand.id,
-        brandName: brand.name,
+        targetId: brand.id,
+        targetName: brand.name,
         success: true,
       });
       return brand;
     } catch (error) {
-      logBrandOperation({
+      logOperation({
+        module: 'brand',
         operation: 'create',
         operatorId: userId,
         success: false,
@@ -357,10 +359,11 @@ export class BrandService {
     try {
       await this.deleteBrandsInternal(brandId, userId);
     } catch (error) {
-      logBrandOperation({
+      logOperation({
+        module: 'brand',
         operation: 'delete',
         operatorId: userId,
-        brandId: brandId,
+        targetId: brandId,
         success: false,
         message: error instanceof Error ? error.message : String(error),
       });
@@ -379,11 +382,12 @@ export class BrandService {
       throw new NotFoundException(`找不到该品牌,id:${brandId}`);
     }
     await this.brandsRepository.softDelete({ id: brandId });
-    logBrandOperation({
+    logOperation({
+      module: 'brand',
       operation: 'delete',
       operatorId: userId,
-      brandId: brandId,
-      brandName: brand.name,
+      targetId: brandId,
+      targetName: brand.name,
       success: true,
     });
     const children = await this.brandsRepository.find({

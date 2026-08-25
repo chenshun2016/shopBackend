@@ -8,7 +8,9 @@ import {
   Post,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { BrandService } from './brand.service';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
@@ -52,6 +54,8 @@ export class BrandController {
 
   @Get('brandsTree')
   @ApiOperation({ summary: '查树形结构' })
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(300000) // 5 分钟
   getBrandsTree() {
     return this.brandService.getBrandsTree();
   }

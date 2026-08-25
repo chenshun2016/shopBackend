@@ -1973,6 +1973,78 @@
           "品牌"
         ]
       }
+    },
+    "/api/admin/upload/image": {
+      "post": {
+        "operationId": "UploadController_uploadImage",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "商品图片:严格校验,仅 jpg/jpeg/png/webp ≤2MB",
+        "tags": [
+          "文件上传"
+        ]
+      }
+    },
+    "/api/admin/upload/file": {
+      "post": {
+        "operationId": "UploadController_uploadFile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "summary": "通用文档:pdf/doc/docx/xls/xlsx/ppt/pptx/zip/txt ≤20MB",
+        "tags": [
+          "文件上传"
+        ]
+      }
     }
   },
   "info": {

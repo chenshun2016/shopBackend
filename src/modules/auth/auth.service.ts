@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
+import { SmsService } from '../sms/sms.service';
 import { User, UserRole } from '../users/entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -11,6 +12,7 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly smsService: SmsService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -62,6 +64,10 @@ export class AuthService {
         role: user.role,
       },
     };
+  }
+
+  async smsLogin() {
+    return 123;
   }
 
   private generateToken(user: User): string {

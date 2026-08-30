@@ -10,6 +10,12 @@ interface SmsApiResponse {
   request_id?: string;
 }
 
+export interface SendSmsResult {
+  success: boolean;
+  code: string;
+  data?: any;
+}
+
 @Injectable()
 export class SmsService {
   constructor(private readonly httpService: HttpService) {}
@@ -25,7 +31,7 @@ export class SmsService {
   /**
    * 发送短信验证码
    */
-  async sendSmsCode(phoneNumber: string): Promise<any> {
+  async sendSmsCode(phoneNumber: string): Promise<SendSmsResult> {
     // 生成随机验证码
     const code = this.generateCode();
 

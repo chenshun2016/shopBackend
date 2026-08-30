@@ -7,8 +7,12 @@ class UserInfo {
   @ApiProperty({ description: '用户名', example: 'john' })
   username: string;
 
-  @ApiProperty({ description: '邮箱', example: 'john@example.com' })
-  email: string;
+  @ApiProperty({
+    description: '邮箱',
+    example: 'john@example.com',
+    nullable: true,
+  })
+  email: string | null;
 
   @ApiProperty({ description: '角色', example: 'customer' })
   role: string;

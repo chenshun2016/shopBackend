@@ -1,22 +1,18 @@
 // sms.controller.ts
 import { Controller, Post, Body } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiOkResponse } from '@nestjs/swagger';
 import { SmsService } from './sms.service';
+import { SendSmsDto, SendSmsResponseDto } from './dto/send-sms.dto';
 
+@ApiTags('短信')
 @Controller('sms')
 export class SmsController {
   constructor(private readonly smsService: SmsService) {}
 
   @Post('send')
-  async sendCode(@Body('phone') phone: string) {
-    // 验证手机号格式
-    if (!this.isValidPhone(phone)) {
-      throw new Error('手机号格式不正确');
-    }
-
-    return this.smsService.sendSmsCode(phone);
-  }
-
-  private isValidPhone(phone: string): boolean {
-    return /^1[3-9]\d{9}$/.test(phone);
+  @ApiOperation({ summary: '发送短信验证码' })
+  @ApiOkResponse({ description: '发送成功', type: SendSmsResponseDto })
+  sendCode(@Body() dto: SendSmsDto) {
+    return this.smsService.sendSmsCode(dto.phone);
   }
 }

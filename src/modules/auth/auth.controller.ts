@@ -8,6 +8,7 @@ import {
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { SmsLoginDto } from './dto/sms-login.dto';
 import { RegisterResponseDto, LoginResponseDto } from './dto/auth-response.dto';
 import { Public } from '../../common/decorators/public.decorator';
 
@@ -36,5 +37,16 @@ export class AuthController {
   })
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
+  }
+
+  @Post('sms-login')
+  @Public()
+  @ApiOperation({ summary: '手机号验证码登录（首次登录自动注册）' })
+  @ApiOkResponse({
+    description: '登录成功',
+    type: LoginResponseDto,
+  })
+  smsLogin(@Body() dto: SmsLoginDto) {
+    return this.authService.smsLogin(dto);
   }
 }

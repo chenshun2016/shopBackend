@@ -45,15 +45,26 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { email } });
   }
 
+  async findByPhone(phone: string): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { phone } });
+  }
+
   async create(data: Partial<User>): Promise<User> {
-    if (!data.username || !data.email) {
-      throw new ConflictException('用户名和邮箱不能为空');
+    if (!data.username) {
+      throw new ConflictException('用户名不能为空');
     }
     const existingUsername = await this.findByUsername(data.username);
     if (existingUsername) throw new ConflictException('用户名已存在');
 
-    const existingEmail = await this.findByEmail(data.email);
-    if (existingEmail) throw new ConflictException('邮箱已被注册');
+    if (data.email) {
+      const existingEmail = await this.findByEmail(data.email);
+      if (existingEmail) throw new ConflictException('邮箱已被注册');
+    }
+
+    if (data.phone) {
+      const existingPhone = await this.findByPhone(data.phone);
+      if (existingPhone) throw new ConflictException('手机号已被注册');
+    }
 
     const user = this.usersRepository.create(data);
     return this.usersRepository.save(user);

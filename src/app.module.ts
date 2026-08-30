@@ -50,8 +50,15 @@ import { SmsModule } from './modules/sms/sms.module';
     }),
     CacheModule.registerAsync({
       isGlobal: true,
-      useFactory: () => ({
-        stores: [new Keyv({ store: new KeyvRedis('redis://localhost:6379') })],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        stores: [
+          new Keyv({
+            store: new KeyvRedis(
+              config.get<string>('REDIS_URL', 'redis://localhost:6379'),
+            ),
+          }),
+        ],
         ttl: 60000, // 默认 60 秒
       }),
     }),

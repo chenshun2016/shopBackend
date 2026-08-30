@@ -24,14 +24,22 @@ export class User {
   @Column({ length: 50, unique: true })
   username: string;
 
-  @ApiProperty({ description: '邮箱' })
-  @Column({ length: 100, unique: true })
+  @ApiProperty({ description: '邮箱', nullable: true })
+  @Column({ length: 100, unique: true, nullable: true })
   email: string;
+
+  @ApiProperty({
+    description: '手机号',
+    example: '13800138000',
+    nullable: true,
+  })
+  @Column({ length: 20, unique: true, nullable: true })
+  phone: string;
 
   @OneToMany(() => Address, (address) => address.user)
   addresses: Address[]; // 这里必须是 Address[] 类型，不能是 any
 
-  @Column({ name: 'password_hash', length: 255, select: false })
+  @Column({ name: 'password_hash', length: 255, select: false, nullable: true })
   passwordHash: string;
 
   @ApiProperty({ description: '角色', enum: UserRole })

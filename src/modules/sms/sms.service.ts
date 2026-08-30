@@ -49,10 +49,11 @@ export class SmsService {
     const code = this.generateCode();
 
     // 调用API发送
-    const url = 'https://push.spug.cc/sms/QpGb*****Rw';
+    const url = 'https://push.spug.cc/sms/c1WawN_CT82vD7qd33Cwcg';
     const params = new URLSearchParams({
       to: phoneNumber,
-      code: code,
+      number: '05', // 模板变量：有效期分钟数（需2位数字或中文数字）
+      code: code, // 模板变量：验证码
     });
 
     try {

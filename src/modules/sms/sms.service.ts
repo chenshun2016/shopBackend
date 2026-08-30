@@ -3,13 +3,11 @@ import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 
-interface aaa {
-  data: object;
-  // message: string;
-}
-
-interface bbb {
-  message: string;
+/** spug 推送助手短信接口的响应格式：code=200 仅表示请求已受理，短信为异步发送 */
+interface SmsApiResponse {
+  code: number;
+  msg: string;
+  request_id?: string;
 }
 
 @Injectable()
@@ -39,8 +37,8 @@ export class SmsService {
     });
 
     try {
-      const response: aaa = await lastValueFrom(
-        this.httpService.get(`${url}?${params.toString()}`),
+      const response = await lastValueFrom(
+        this.httpService.get<SmsApiResponse>(`${url}?${params.toString()}`),
       );
 
       return {
@@ -48,8 +46,9 @@ export class SmsService {
         code: code, // 生产环境不要返回code给前端
         data: response.data,
       };
-    } catch (error: bbb) {
-      throw new Error(`短信发送失败: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : '未知错误';
+      throw new Error(`短信发送失败: ${message}`);
     }
   }
 }

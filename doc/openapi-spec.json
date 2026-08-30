@@ -2045,6 +2045,27 @@
           "文件上传"
         ]
       }
+    },
+    "/api/sms/send": {
+      "post": {
+        "operationId": "SmsController_sendCode",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Sms"
+        ]
+      }
     }
   },
   "info": {

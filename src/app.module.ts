@@ -20,6 +20,7 @@ import { AddressesModule } from './modules/addresses/addresses.module';
 import { SellersModule } from './modules/sellers/sellers.module';
 import { BrandModule } from './modules/brand/brand.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { SmsModule } from './modules/sms/sms.module';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { UploadModule } from './modules/upload/upload.module';
     SellersModule,
     BrandModule,
     UploadModule,
+    SmsModule,
   ],
 })
 export class AppModule {}
